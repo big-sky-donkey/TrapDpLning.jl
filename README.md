@@ -3,7 +3,9 @@
 
 陷阱深度学习TrapDpLning.jl
 
-依赖：自动求导包（ Zygote.jl ）
+依赖：
+
+自动求导包（ Zygote.jl ）
 
 util：
 
