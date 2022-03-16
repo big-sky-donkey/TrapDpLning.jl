@@ -1,5 +1,6 @@
 using TrapDpLning
 using DelimitedFiles
+using Plots
 
 struct softmax
 end
@@ -11,7 +12,7 @@ end
 m=chain(birnn(lstm(12,80),gru(12,80)), perceptron(80,9), softmax())
 
 # x三维，y二维
-x=file2vvv("F:\\TrapDpLning\\test\\rnn\\x.txt") # 需要修改地址
+x=file2vvv("F:\\TrapDpLning\\test\\rnn\\x.txt") # 需要修改地址，第一次加载慢（原因不知道）
 y=readdlm("F:\\TrapDpLning\\test\\rnn\\y.txt")  # 需要修改地址
 y=y'
 y=[y[:,j] for j in 1:size(y,2)]
@@ -58,17 +59,57 @@ function loss(x,y)
     m.layers[1].rnn2.state = zeros(size(m.layers[1].rnn2.state,1))
     crossentropy( [ m(x[:,j], x[:,size(x,2)+1-j]) for j in 1:size(x,2) ][end], y )
 end
-opt = adam(0.01)
+opt = adam(0.005)
 
-for k in 1:100
+# 计算测试集的准确率
+function cal_accu(start=221, stop=270)
+    cnt = 0
+
+    for k in start:stop
+        m.layers[1].rnn1.state = zeros(size(m.layers[1].rnn1.state,1))
+        m.layers[1].rnn2.state = zeros(size(m.layers[1].rnn2.state,1))
+        if sum(abs.([ m(x[k][:,j], x[k][:,size(x[k],2)+1-j]) for j in 1:size(x[k],2) ][end]-y[k]) )<1
+            # 跟label相同的类别概率超过0.5
+            cnt+=1
+        end
+    end
+    cnt/(stop-start+1)
+end
+
+# 展示曲线，loss_train, loss_test, accu_train, accu_test
+res_show=[[],[],[],[]]
+
+TRAIN_TIMES=300
+
+for k in 1:TRAIN_TIMES
+    # 发现准确率到达80%后，反而下降，所以减小学习率，并且采用逐渐衰减的学习率，准确率达到90%~95%
+    # 学习率衰减, 0.006 -> 0.002
+    opt = adam(0.006 - (0.006-0.002)*k/TRAIN_TIMES)
+
     train!(m, data, loss, opt)
-    show_loss = sum( [ loss(x_test[i], y_test[i]) for i in 1:size(y_test,1) ] )
-    println(k, ": loss = ", show_loss)
+
+    show_loss_train = sum( [ loss(x_train[i], y_train[i]) for i in 1:size(y_train,1) ] )
+    show_loss_test = sum( [ loss(x_test[i], y_test[i]) for i in 1:size(y_test,1) ] )
+    show_accu_train = cal_accu(1, 220)
+    show_accu_test = cal_accu(221, 270)
+
+    push!(res_show[1], show_loss_train)
+    push!(res_show[2], show_loss_test)
+    push!(res_show[3], show_accu_train)
+    push!(res_show[4], show_accu_test)
+
+    println(k, ": loss_train = ", show_loss_train, " loss_test = ", show_loss_test, 
+    " accu_train = ", show_accu_train, " accu_test = ", show_accu_test)
 end
 
-# 查看测试数据的分类正误
-for a in 1:size(x_test,1)
-    m.layers[1].rnn1.state = zeros(size(m.layers[1].rnn1.state,1))
-    m.layers[1].rnn2.state = zeros(size(m.layers[1].rnn2.state,1))
-    println(sum(abs.([ m(x_test[a][:,j], x_test[a][:,size(x_test[a],2)+1-j]) for j in 1:size(x_test[a],2) ][end]-y_test[a]) )<1)
-end
+default(show=true)
+plotly()
+plot(res_show[1:2], linewidth=3, xlabel="TRAIN_TIMES", ylabel="loss(train&test)", title="test_birnn_loss")
+plot(res_show[3:4], linewidth=3, xlabel="TRAIN_TIMES", ylabel="accu(train&test)", title="test_birnn_accu")
+
+# # 查看测试集的分类正误，有accu曲线了，已经不需要这个了
+# for a in 1:size(x_test,1)
+#     m.layers[1].rnn1.state = zeros(size(m.layers[1].rnn1.state,1))
+#     m.layers[1].rnn2.state = zeros(size(m.layers[1].rnn2.state,1))
+#     println( sum(abs.([ m(x_test[a][:,j], x_test[a][:,size(x_test[a],2)+1-j]) for j in 1:size(x_test[a],2) ][end]-y_test[a]) )<1 )
+# end
