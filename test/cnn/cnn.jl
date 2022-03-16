@@ -1,5 +1,6 @@
 using TrapDpLning
 using MLDatasets
+using Plots
 
 x, y = MNIST.traindata(Float32)
 if size(size(x), 1)==3
@@ -20,10 +21,10 @@ if size(size(y), 1)==1
     end
     y=tmp
 end
-x_train = x[:,:,:,1:50]
-y_train = y[1:50]
-x_test = x[:,:,:,2001:2500]
-y_test = y[2001:2500]
+x_train = x[:,:,:,1:30000]
+y_train = y[1:30000]
+x_test = x[:,:,:,50001:52222]
+y_test = y[50001:52222]
 
 struct relu
 end
@@ -37,25 +38,52 @@ function (m::softmax)(x)
     [exp(xi)/s for xi in x]
 end
 
-m=chain(cnn(5,5,1,3), cnn_d(5,5,3,10), maxpool((5,5)), fullconnect(4*4*10,10), softmax())
+m=chain(cnn(5,5,1,5), cnn_d(5,5,5,20), maxpool((5,5)), fullconnect(4*4*20,10), softmax())
 data=zip([x_train[:,:,:,i:i] for i in 1:size(x_train,4)], y_train)
 loss(x,y)=crossentropy(m(x), y)
 opt=adam(0.1)
 
-for k in 1:100
-    train!(m,data,loss,opt)
-    show_loss_1 = sum( [loss(x_train[:,:,:,i:i], y_train[i]) for i in 1:size(y_train,1)] )
-    show_loss_2 = sum( [loss(x_test[:,:,:,i:i], y_test[i]) for i in 1:size(y_test,1)] )
-    println(k, ": loss_train = ", show_loss_1, "  loss_test = ", show_loss_2)
-end
+# 曲线
+res_show=[[],[],[]]
 
 # 计算accu
-start, stop, cnt = 50001, 51111, 0
-x_accu = x[:,:,:,start:stop]
-y_accy = y[start:stop]
-for i in 1:(stop-start+1)
-    if sum( abs.( m(x_accu[:,:,:,i:i]) .- y_accy[i] ) ) < 1.2 # 跟label相同的类别概率超过0.4
-        cnt+=1
+function cal_accu(start, stop)
+    cnt = 0
+    x_accu = x[:,:,:,start:stop]
+    y_accu = y[start:stop]
+    for i in 1:(stop-start+1)
+        if sum( abs.( m(x_accu[:,:,:,i:i]) .- y_accu[i] ) ) < 1 # 跟label相同的类别概率超过0.5
+            cnt+=1
+        end
     end
+    cnt/(stop-start+1)
 end
-print("accu = ", cnt/(stop-start+1))
+
+# 训练1:30000张图片，测试50001:52222张图片
+batch=100
+TRAIN_TIMES=300
+for k in 1:300
+
+    # 学习率衰减, 0.05 -> 0.001
+    opt = adam(0.05 - (0.05-0.001)*k/TRAIN_TIMES)
+
+    x_train=x[:,:,:,1+(k-1)*batch:k*batch]
+    y_train=y[1+(k-1)*batch:k*batch]
+    data=zip([x_train[:,:,:,i:i] for i in 1:size(x_train,4)], y_train)
+
+    train!(m,data,loss,opt)
+
+    show_loss = sum( [loss(x_test[:,:,:,i:i], y_test[i]) for i in 1:size(y_test,1)] )
+    show_accu = cal_accu(50001, 52222)
+
+    push!(res_show[1], show_loss)
+    push!(res_show[2], show_accu)
+
+    println(k, ": loss = ", show_loss, " accu = ", show_accu)
+end
+
+# 曲线
+default(show=true)
+plotly()
+plot(res_show[1:1], linewidth=3, xlabel="TRAIN_TIMES", ylabel="loss(test)", title="test_cnn_loss")
+plot(res_show[2:2], linewidth=3, xlabel="TRAIN_TIMES", ylabel="accu(test)", title="test_cnn_accu")
