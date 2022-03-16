@@ -49,6 +49,7 @@ util：
 
 
 
+
 【EXAMPLES】【EXAMPLES】:
 
 （1）birnn（正向lstm、反向gru，隐藏层80个节点）
@@ -59,19 +60,13 @@ util：
 
 效果：训练集准确率97%，测试集准确率92%
 
-
-
 ![066fc0088bdff8fdbd98ac5eaa4c632](https://user-images.githubusercontent.com/81020046/158574975-fada682a-e8ef-472b-9114-b9d4689d1b5b.png)
-
-
 
 ![6a8f2d9a7603f08e8dc157543f48a73](https://user-images.githubusercontent.com/81020046/158574999-684e40f0-b28f-4d52-9c9d-2d248941cb6f.png)
 
-
-
 ![83dac0983fdbc10bc7c3fb44ba81b75](https://user-images.githubusercontent.com/81020046/158575006-2539757a-b739-4589-b39a-301c36026ae6.png)
 
-（2）cnn（ cnn（卷积核5*5）
+（2）cnn（ cnn（卷积核5*5
 
 
 
