@@ -1,5 +1,5 @@
 # TrapDpLning.jl
-初入机器学习，造轮子上瘾，浪费时间精力却沉迷其中，陷入了造轮子的陷阱，没有意义，还不如多看看新论文或者造更棒的模型。
+初入机器学习，造轮子上瘾，浪费时间精力却沉迷其中，陷入了造轮子的陷阱，没有意义，不如看看新论文或者造更棒的模型。
 
 陷阱深度学习TrapDpLning.jl
 
@@ -69,16 +69,16 @@ util：
 
 问题：来自MLDatasets.jl的MNIST，手写数字识别（带label）
 
-设置：loss使用交叉熵loss，opt使用adam（学习率0.05->0.001，随便设的）
+设置：loss使用交叉熵loss，opt使用adam（学习率0.02->0.001，随便设的）
 
-效果：
+效果：准确率80%
 
+分析：模型是随便搭的，没有bn和dropout，导致准确率低，不玩了拜拜
 
+![Uploading 066fc0088bdff8fdbd98ac5eaa4c632.png…]()
 
+![9442053b819869a0e224a80cac13c29](https://user-images.githubusercontent.com/81020046/159102072-a0012174-df3e-4081-a871-e50c0c2b32cb.png)
 
-
-
-
-
+![b9b1203286fd25b9f8cace061c439f9](https://user-images.githubusercontent.com/81020046/159102084-f829e31e-0fa0-4cb8-871c-6640196ceb05.png)
 
 
