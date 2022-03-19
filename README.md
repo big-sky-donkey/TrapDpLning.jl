@@ -1,5 +1,6 @@
 # TrapDpLning.jl
 初入机器学习，造轮子上瘾，浪费时间精力却沉迷其中，陷入了造轮子的陷阱，没有意义，不如看看新论文或者造更棒的模型。
+运行内存900M，写出这样的代码，生而为人，我很抱歉。
 
 陷阱深度学习TrapDpLning.jl
 
@@ -75,7 +76,8 @@ util：
 
 分析：模型是随便搭的，没有bn和dropout，导致准确率低，不玩了拜拜
 
-![Uploading 066fc0088bdff8fdbd98ac5eaa4c632.png…]()
+
+
 
 ![9442053b819869a0e224a80cac13c29](https://user-images.githubusercontent.com/81020046/159102072-a0012174-df3e-4081-a871-e50c0c2b32cb.png)
 
