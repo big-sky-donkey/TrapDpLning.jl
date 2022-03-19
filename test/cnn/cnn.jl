@@ -38,7 +38,7 @@ function (m::softmax)(x)
     [exp(xi)/s for xi in x]
 end
 
-m=chain(cnn(5,5,1,5), cnn_d(5,5,5,20), maxpool((5,5)), fullconnect(4*4*20,10), softmax())
+m=chain(cnn(5,5,1,4), cnn_d(5,5,4,16), maxpool((5,5)), fullconnect(4*4*16,10), softmax())
 data=zip([x_train[:,:,:,i:i] for i in 1:size(x_train,4)], y_train)
 loss(x,y)=crossentropy(m(x), y)
 opt=adam(0.1)
@@ -64,8 +64,8 @@ batch=100
 TRAIN_TIMES=300
 for k in 1:300
 
-    # 学习率衰减, 0.05 -> 0.001
-    opt = adam(0.05 - (0.05-0.001)*k/TRAIN_TIMES)
+    # 学习率衰减, 0.02 -> 0.001
+    opt = adam(0.02 - (0.02-0.001)*k/TRAIN_TIMES)
 
     x_train=x[:,:,:,1+(k-1)*batch:k*batch]
     y_train=y[1+(k-1)*batch:k*batch]
