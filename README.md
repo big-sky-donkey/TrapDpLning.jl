@@ -1,6 +1,6 @@
 # TrapDpLning.jl
 初入机器学习，造轮子上瘾，浪费时间精力却沉迷其中，陷入了造轮子的陷阱，没有意义，不如看看新论文或者造更棒的模型。
-运行内存900M，写出这样的代码，生而为人，我很抱歉。
+没有任何性能的考虑。
 
 陷阱深度学习TrapDpLning.jl
 
@@ -66,6 +66,9 @@ util：
 
 ![83dac0983fdbc10bc7c3fb44ba81b75](https://user-images.githubusercontent.com/81020046/158575006-2539757a-b739-4589-b39a-301c36026ae6.png)
 
+
+
+
 （2）cnn（ cnn（kernel 5-by-5, channel 1->4 ），深度可分离cnn（kernel 5-by-5, channel 4->16），maxpool（5-by-5））
 
 问题：来自MLDatasets.jl的MNIST，手写数字识别（带label）
@@ -76,8 +79,7 @@ util：
 
 分析：模型是随便搭的，没有bn和dropout，导致准确率低，不玩了拜拜
 
-
-
+![518344afd415f643a0105bd4ab584a6](https://user-images.githubusercontent.com/81020046/159102232-50a148bf-81c2-4e66-989f-f7dc9331c474.png)
 
 ![9442053b819869a0e224a80cac13c29](https://user-images.githubusercontent.com/81020046/159102072-a0012174-df3e-4081-a871-e50c0c2b32cb.png)
 
