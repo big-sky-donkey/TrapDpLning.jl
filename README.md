@@ -80,7 +80,7 @@ util：
 
 效果：准确率80%
 
-分析：模型是随便搭的，没有bn和dropout，导致准确率低，不玩了拜拜
+分析：模型是随便搭的，没有bn和dropout，导致准确率低
 
 ![518344afd415f643a0105bd4ab584a6](https://user-images.githubusercontent.com/81020046/159102232-50a148bf-81c2-4e66-989f-f7dc9331c474.png)
 
